@@ -1,4 +1,4 @@
-name: iPhone Home Replica
+name: iPhoneHomeReplica
 options:
   bundleIdPrefix: com.studyquiz
   deploymentTarget:
