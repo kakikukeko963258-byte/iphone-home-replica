@@ -1,17 +1,21 @@
 # iPhone Home Replica
 
-iPhoneのホーム画面を参考に、4列×6行、番号付きアイコン32個、Dock風の下部ガラス領域、検索欄、壁紙をSwiftUIで再現するiOSアプリです。24項目ずつの2ページを左右スワイプで切り替えます。アイコンの押下、編集時の揺れ、フォルダの作成・展開、ページ移動には動きを付けています。iOS 16以降に対応します。
+iOSのホーム画面を題材にした、新規実装のSwiftUIアプリです。アプリ本体のソース、レイアウト、壁紙、アイコン描画はこのプロジェクト内に独立して用意しています。既存アプリの画面コードやアートワークは取り込んでいません。
 
-Bundle IDはStudyQuizと同じ `com.studyquiz.dailyquiz` です。同時にはインストールできず、既存StudyQuizを置き換えます。iOSの実際のホーム画面を置き換える機能ではありません。
+4列×6行の2ページ、ページ切り替え、Dock、検索、アプリアイコンから広がる起動アニメーション、長押し編集時の揺れを実装しています。iOS標準のステータスバーを使います。iOS 16以降に対応します。
 
-## IPAの作成
+Bundle ID: `com.studyquiz.dailyquiz`。StudyQuizと同時にインストールできず、置き換えます。iOS本体のホーム画面を置き換える機能ではありません。
 
-GitHubへpushするとmacOS runner + Xcodeで未署名IPAをビルドし、Actions Artifact `iphone-home-replica-ipa` とGitHub Releaseへ保存します。WindowsではXcode不要です。
+## 公開ビルド
 
-IPAは設定済みの改造版AltForge Remoteで再署名してインストールしてください。READMEと操作手順はAltForge Remote Preview側を参照してください。
+`main`へのpushまたはActionsの手動実行で、GitHub ActionsのmacOS runner + Xcodeが未署名IPAを作成します。Actions Artifact `iphone-home-replica-ipa` とGitHub Releaseから取得できます。AltForge Remoteで再署名してインストールします。
 
-## レイアウトと動き
+## ソース構成
 
-ホーム画面の位置・サイズ・ラベル・行間を画面幅に合わせます。ステータスバーはiOS標準表示です。番号アイコンをタップするとアイコンからページへ広がる起動風の変形が走り、戻る操作で閉じます。Reduce Motion設定にも対応します。
+- `Replica/ReplicaApp.swift`: アプリ起動
+- `Replica/HomeScene.swift`: 画面配置、ページ切り替え、アイコン、Dock、検索、起動画面
+- `Replica/HomeCatalog.swift`: このアプリ専用のアイコン一覧と描画色
+- `Replica/AppLaunchScene.swift`: アイコンから展開するアプリプレビュー
+- `Replica/Assets.xcassets`: このプロジェクトで新規作成したアプリアイコン
 
-本プロジェクトはmainの最新ソースコミット `8e021a7a2612fe23ff33a42ce38a6d228151b17e` を元に、ホーム再現アプリとして独立させました。
+XcodeGenで生成するiOSアプリです。外部Swift packageや別アプリのプロジェクト依存はありません。

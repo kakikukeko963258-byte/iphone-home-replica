@@ -7,7 +7,7 @@ targets:
   iPhoneHomeReplica:
     type: application
     platform: iOS
-    sources: [Main/HomeLayout.swift, Main/MainApp.swift, Main/Artwork.swift, Main/EditingWiggle.swift, Main/HomeIconMenu.swift, Main/IconTouchSurface.swift, Main/LiftFeedback.swift, Main/Assets.xcassets]
+    sources: [Replica]
     info:
       path: build/Info.plist
       properties:
@@ -26,8 +26,8 @@ targets:
         INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
         TARGETED_DEVICE_FAMILY: '1'
         SWIFT_VERSION: '5.0'
-        MARKETING_VERSION: '1.0.0'
-        CURRENT_PROJECT_VERSION: '1'
+        MARKETING_VERSION: '1.1.0'
+        CURRENT_PROJECT_VERSION: '4'
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
 schemes:
   iPhoneHomeReplica:
