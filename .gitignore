@@ -1,0 +1,9 @@
+build/
+dist/
+*.xcodeproj/
+.DS_Store
+simulator-build/
+*.xcresult/
+home.png
+screenshots/
+motion.mov
