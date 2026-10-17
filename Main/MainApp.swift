@@ -672,7 +672,6 @@ struct SlotPage: View {
     let dragChanged: (CGFloat) -> Void
     let dragEnded: (Bool) -> Void
     var body: some View {
-        if slot >= 0 {
             ZStack {
                 Wallpaper(image: wallpaper)
                 Color.black.opacity(0.15).ignoresSafeArea()
@@ -703,6 +702,5 @@ struct SlotPage: View {
                     let predicted = value.startLocation.x < 40 ? value.predictedEndTranslation.width : value.predictedEndTranslation.height
                     dragEnded(distance > 100 || predicted > 220)
                 })
-        }
     }
 }
