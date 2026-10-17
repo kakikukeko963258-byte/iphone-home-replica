@@ -1,55 +1,27 @@
-name: main
+name: iPhone Home Replica
 options:
-  bundleIdPrefix: com.kakikukeko
+  bundleIdPrefix: com.studyquiz
   deploymentTarget:
     iOS: '16.0'
-settings:
-  base:
-    APP_GROUP: group.com.kakikukeko.main.pcfilebridge
 targets:
-  main:
+  iPhoneHomeReplica:
     type: application
     platform: iOS
-    sources: [Main, BridgeShared]
-    dependencies:
-      - target: PCFileBridgeFileProvider
-        embed: true
+    sources: [Main/HomeLayout.swift, Main/MainApp.swift, Main/Artwork.swift, Main/EditingWiggle.swift, Main/HomeIconMenu.swift, Main/IconTouchSurface.swift, Main/LiftFeedback.swift, Main/Assets.xcassets]
     info:
-      path: Main/Info.plist
+      path: build/Info.plist
       properties:
-        CFBundleDisplayName: main
+        CFBundleDisplayName: iPhone Home
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen: {}
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
-        NSLocalNetworkUsageDescription: Windows PCを検出し、選択した共有フォルダーへ接続します。
-        NSCameraUsageDescription: PC画面のQRコードを読み取り、接続設定を登録します。
-        NSBonjourServices: [_pcfilebridge._tcp]
-        NSAppTransportSecurity:
-          NSAllowsLocalNetworking: true
-          NSExceptionDomains:
-            '10.0.0.0/8':
-              NSExceptionAllowsInsecureHTTPLoads: true
-            '172.16.0.0/12':
-              NSExceptionAllowsInsecureHTTPLoads: true
-            '192.168.0.0/16':
-              NSExceptionAllowsInsecureHTTPLoads: true
-            '100.64.0.0/10':
-              NSExceptionAllowsInsecureHTTPLoads: true
-            '169.254.0.0/16':
-              NSExceptionAllowsInsecureHTTPLoads: true
-            'fe80::/10':
-              NSExceptionAllowsInsecureHTTPLoads: true
-            'fc00::/7':
-              NSExceptionAllowsInsecureHTTPLoads: true
-        PCFileBridgeAppGroup: $(APP_GROUP)
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.kakikukeko.main
-        PRODUCT_NAME: main
-        INFOPLIST_KEY_CFBundleDisplayName: main
-        GENERATE_INFOPLIST_FILE: NO
-        CODE_SIGN_ENTITLEMENTS: Main/Main.entitlements
+        PRODUCT_BUNDLE_IDENTIFIER: com.studyquiz.dailyquiz
+        PRODUCT_NAME: iPhoneHomeReplica
+        INFOPLIST_KEY_CFBundleDisplayName: iPhone Home
+        GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
         TARGETED_DEVICE_FAMILY: '1'
@@ -57,37 +29,8 @@ targets:
         MARKETING_VERSION: '1.0.0'
         CURRENT_PROJECT_VERSION: '1'
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-  PCFileBridgeFileProvider:
-    type: app-extension
-    platform: iOS
-    sources: [FileProviderExtension, BridgeShared]
-    settings:
-      base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.kakikukeko.main.FileProvider
-        PRODUCT_NAME: PCFileBridgeFileProvider
-        INFOPLIST_FILE: FileProviderExtension/Info.plist
-        GENERATE_INFOPLIST_FILE: NO
-        CODE_SIGN_ENTITLEMENTS: FileProviderExtension/FileProviderExtension.entitlements
-        APPLICATION_EXTENSION_API_ONLY: YES
-        SKIP_INSTALL: YES
-        SWIFT_VERSION: '5.0'
-        MARKETING_VERSION: '1.0.0'
-        CURRENT_PROJECT_VERSION: '1'
-  mainUITests:
-    type: bundle.ui-testing
-    platform: iOS
-    sources: [Tests]
-    dependencies:
-      - target: main
-    settings:
-      base:
-        GENERATE_INFOPLIST_FILE: YES
-        SWIFT_VERSION: '5.0'
-        TEST_TARGET_NAME: main
 schemes:
-  main:
+  iPhoneHomeReplica:
     build:
       targets:
-        main: all
-    test:
-      targets: [mainUITests]
+        iPhoneHomeReplica: all

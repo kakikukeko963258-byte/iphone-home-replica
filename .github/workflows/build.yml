@@ -1,4 +1,4 @@
-name: Build public IPA
+name: Build iPhone Home Replica IPA
 on:
   push:
     branches: [main]
@@ -6,7 +6,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: public-ipa-${{ github.ref }}
+  group: iphone-home-replica-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   build:
@@ -18,56 +18,16 @@ jobs:
       - name: Generate project
         run: xcodegen generate
       - name: Build iPhone app
-        run: |
-          set -euo pipefail
-          xcodebuild -project main.xcodeproj -scheme main -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath build CODE_SIGNING_ALLOWED=NO build
-      - name: Package AltStore IPA
+        run: xcodebuild -project iPhoneHomeReplica.xcodeproj -scheme iPhoneHomeReplica -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath build CODE_SIGNING_ALLOWED=NO build
+      - name: Package IPA
         run: bash scripts/package-ipa.sh
       - uses: actions/upload-artifact@v4
         with:
-          name: main-ipa
-          path: dist/main.ipa
-      - name: Select simulator
-        timeout-minutes: 3
-        run: |
-          python3 - <<'PY'
-          import json, os, subprocess
-          data = json.loads(subprocess.check_output(['xcrun', 'simctl', 'list', 'devices', 'available', '-j']))
-          devices = [d for runtime, values in data['devices'].items() if 'iOS' in runtime for d in values if 'iPhone' in d['name']]
-          device = next((d for d in devices if d['name'] == 'iPhone 17 Pro'), devices[0])['udid']
-          with open(os.environ['GITHUB_ENV'], 'a') as f:
-              f.write('SIMULATOR_ID=' + device + '\n')
-          PY
-      - name: Boot preconfigured iPhone
-        timeout-minutes: 1
-        run: |
-          xcrun simctl boot "$SIMULATOR_ID"
-      - name: Verify folder navigation and capture screens
-        timeout-minutes: 18
-        run: |
-          set -euo pipefail
-          xcrun simctl io "$SIMULATOR_ID" recordVideo --codec=h264 motion.mov > /tmp/recording.log 2>&1 &
-          RECORD_PID=$!
-          trap 'kill -INT "$RECORD_PID" 2>/dev/null || true' EXIT
-          xcodebuild test -project main.xcodeproj -scheme main -destination "platform=iOS Simulator,id=$SIMULATOR_ID" -parallel-testing-enabled NO -test-timeouts-enabled YES -default-test-execution-time-allowance 120 -maximum-test-execution-time-allowance 180 -derivedDataPath simulator-build -resultBundlePath TestResults.xcresult CODE_SIGNING_ALLOWED=NO
-          kill -INT "$RECORD_PID" 2>/dev/null || true
-          wait "$RECORD_PID" || true
-          trap - EXIT
-          xcrun xcresulttool export attachments --path TestResults.xcresult --output-path screenshots
-      - uses: actions/upload-artifact@v4
-        timeout-minutes: 3
-        if: always()
-        with:
-          name: visual-verification
-          compression-level: 0
-          path: |
-            screenshots/
-            TestResults.xcresult
-            motion.mov
+          name: iphone-home-replica-ipa
+          path: dist/iPhoneHomeReplica.ipa
       - name: Publish downloadable build
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          TAG="build-${GITHUB_RUN_NUMBER}"
-          gh release create "$TAG" dist/main.ipa --title "main build ${GITHUB_RUN_NUMBER}" --notes "PC File Bridge in slot 1, with the existing animated home and File Provider extension. Install with configured AltForge Remote (re-signing required)." --target "$GITHUB_SHA"
-
+          TAG="replica-build-${GITHUB_RUN_NUMBER}"
+          gh release create "$TAG" dist/iPhoneHomeReplica.ipa --title "iPhone Home Replica ${GITHUB_RUN_NUMBER}" --notes "Two-page iPhone home screen recreation. Bundle ID com.studyquiz.dailyquiz; replaces StudyQuiz when installed." --target "$GITHUB_SHA"
