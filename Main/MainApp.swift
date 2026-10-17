@@ -421,10 +421,10 @@ struct HomeView: View {
             // including a move across a page boundary. Only positions animate.
             ZStack(alignment: .topLeading) {
                 Color.clear
-                    .frame(width: CGFloat(max(1, (store.items.count + 23) / 24)) * metrics.size.width,
+                    .frame(width: CGFloat(min(2, max(1, (store.items.count + 23) / 24))) * metrics.size.width,
                            height: metrics.size.height)
                     .contentShape(Rectangle()).onTapGesture(perform: finishEditing)
-                ForEach(Array(displayedItems.enumerated()), id: \.element.id) { index, item in
+                ForEach(Array(displayedItems.prefix(48).enumerated()), id: \.element.id) { index, item in
                     let rect = metrics.iconRect(index % 24)
                     homeTile(item, metrics: metrics, rect: rect)
                         .frame(width: metrics.cell, height: metrics.tileHeight)
@@ -444,7 +444,7 @@ struct HomeView: View {
                 guard !editing && draggedItem == nil else { return }
                 let delta = value.predictedEndTranslation.width
                 withAnimation(.spring(response: 0.32, dampingFraction: 0.94)) {
-                    if delta < -metrics.size.width * 0.2 { page = min(page + 1, max(0, (store.items.count - 1) / 24)) }
+                    if delta < -metrics.size.width * 0.2 { page = min(page + 1, 1) }
                     if delta > metrics.size.width * 0.2 { page = max(0, page - 1) }
                     pagePan = 0
                 }
@@ -672,20 +672,7 @@ struct SlotPage: View {
     let dragChanged: (CGFloat) -> Void
     let dragEnded: (Bool) -> Void
     var body: some View {
-        if slot == 1 {
-            PCFileBridgeView(onHome: close)
-                .padding(.top, safeTop)
-                .padding(.bottom, 16)
-                .background(Color(uiColor: .systemGroupedBackground))
-                .simultaneousGesture(DragGesture().onChanged { value in
-                    if value.startLocation.x < 24 && value.translation.width > abs(value.translation.height) {
-                        dragChanged(max(0, value.translation.width))
-                    }
-                }.onEnded { value in
-                    guard value.startLocation.x < 24 else { return }
-                    dragEnded(value.translation.width > 100 || value.predictedEndTranslation.width > 220)
-                })
-        } else {
+        if slot >= 0 {
             ZStack {
                 Wallpaper(image: wallpaper)
                 Color.black.opacity(0.15).ignoresSafeArea()
